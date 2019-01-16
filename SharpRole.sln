@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpRoll", "src/SharpRoll.csproj", "{FF2CBE76-224F-488A-987B-8A88AE86F0CE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B5FEF2A3-CF30-4CA1-A72E-927673424723}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpRoll.Tests", "tests\SharpRoll.Tests\SharpRoll.Tests.csproj", "{BF1F667A-7F28-40DC-8934-8060207206D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{63B0FF74-59A3-4E19-A128-B7A193BD22A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF2CBE76-224F-488A-987B-8A88AE86F0CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF2CBE76-224F-488A-987B-8A88AE86F0CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF2CBE76-224F-488A-987B-8A88AE86F0CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF2CBE76-224F-488A-987B-8A88AE86F0CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF1F667A-7F28-40DC-8934-8060207206D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF1F667A-7F28-40DC-8934-8060207206D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF1F667A-7F28-40DC-8934-8060207206D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF1F667A-7F28-40DC-8934-8060207206D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FF2CBE76-224F-488A-987B-8A88AE86F0CE} = {B5FEF2A3-CF30-4CA1-A72E-927673424723}
+		{BF1F667A-7F28-40DC-8934-8060207206D6} = {63B0FF74-59A3-4E19-A128-B7A193BD22A6}
+	EndGlobalSection
+EndGlobal
