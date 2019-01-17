@@ -1,15 +1,18 @@
 ﻿using System;
 using SharpRoll.Controllers;
+using SharpRoll.Views;
 
 namespace SharpRoll
 {
     public class Program
     {
+        internal static ConsoleView consoleView = new ConsoleView();
+
         public static void Main(string[] args)
         {
             //var result = InternalMain(args);
             //System.Environment.Exit(result);
-            var inputManager = new InputManager();
+            var inputManager = new InputManager(consoleView);
 
             while (true)
             {

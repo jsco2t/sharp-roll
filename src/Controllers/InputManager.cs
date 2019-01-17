@@ -2,6 +2,8 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 
+using SharpRoll.Views;
+
 namespace SharpRoll.Controllers
 {
     public class InputManager
@@ -9,16 +11,19 @@ namespace SharpRoll.Controllers
         private StringBuilder inputBuffer = new StringBuilder();
         private List<string> priorInputBuffer = new List<string>();
         private int? priorInputBufferIndex = null;
-
         private Dictionary<string, IInputHandler> inputHandlers;
+        private ConsoleView consoleView;
 
-        public InputManager()
+        public InputManager(ConsoleView consoleView)
         {
             inputHandlers = new Dictionary<string, IInputHandler>();
+            this.consoleView = consoleView;
 
             var rollInputHandler = new RollInputHandler();
+            var exitInputHandler = new ExitInputHandler();
 
             inputHandlers.Add(rollInputHandler.HandlesKeyword, rollInputHandler);
+            inputHandlers.Add(exitInputHandler.HandlesKeyword, exitInputHandler);
         }
 
         public string HandleInput(string input)
@@ -43,32 +48,27 @@ namespace SharpRoll.Controllers
             {
                 case ConsoleKey.UpArrow:
                     var priorInput = GetPriorInputBufferItem();
-                    Console.WriteLine(priorInput);
+                    consoleView.ReplaceLine(priorInput);
                     inputBuffer.Clear();
                     inputBuffer.Append(priorInput);
                     break;
 
                 case ConsoleKey.Enter:
                 case ConsoleKey.End:
-                    
                     var result = HandleInput(inputBuffer.ToString());
                     inputBuffer.Clear();
                     priorInputBufferIndex = 0;
-                    //Console.WriteLine();
-                    //Console.WriteLine(result);
-                    Console.Write($"{Environment.NewLine}{result}{Environment.NewLine}");
+                    consoleView.Write($"{Environment.NewLine}{result}{Environment.NewLine}");
                     break;
 
                 case ConsoleKey.Backspace:
                 case ConsoleKey.Delete:
-                    Console.Write("\b");
-                    Console.Write(" ");
-                    Console.Write("\b");
+                    consoleView.RemoveCharacter();
                     TrimInputBuffer();
                     break;
 
                 default:
-                    Console.Write(key.KeyChar);
+                    consoleView.Write(key.KeyChar);
                     inputBuffer.Append(key.KeyChar);
                     break;
             }
