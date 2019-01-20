@@ -21,9 +21,11 @@ namespace SharpRoll.Controllers
 
             var rollInputHandler = new RollInputHandler();
             var exitInputHandler = new ExitInputHandler();
+            var rollHistoryHandler = new RollHistoryHandler();
 
             inputHandlers.Add(rollInputHandler.HandlesKeyword, rollInputHandler);
             inputHandlers.Add(exitInputHandler.HandlesKeyword, exitInputHandler);
+            inputHandlers.Add(rollHistoryHandler.HandlesKeyword, rollHistoryHandler);
         }
 
         public string HandleInput(string input)
@@ -43,11 +45,19 @@ namespace SharpRoll.Controllers
 
         public void HandleKeyPress(ConsoleKeyInfo key)
         {
-            
+            var priorInput = string.Empty;
+
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                    var priorInput = GetPriorInputBufferItem();
+                    priorInput = GetPriorInputBufferItem();
+                    consoleView.ReplaceLine(priorInput);
+                    inputBuffer.Clear();
+                    inputBuffer.Append(priorInput);
+                    break;
+
+                case ConsoleKey.DownArrow:
+                    priorInput = GetPriorInputBufferItem(searchForward: false);
                     consoleView.ReplaceLine(priorInput);
                     inputBuffer.Clear();
                     inputBuffer.Append(priorInput);
@@ -78,7 +88,7 @@ namespace SharpRoll.Controllers
 
         private string[] GetInputTokens(string input)
         {
-            return input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            return input.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
         }
 
         private void AddToPriorInputBuffer(string input)
@@ -91,16 +101,26 @@ namespace SharpRoll.Controllers
             }
         }
 
-        private string GetPriorInputBufferItem()
+        private string GetPriorInputBufferItem(bool searchForward = true)
         {
             var result = string.Empty;
             int index = priorInputBufferIndex.HasValue ? priorInputBufferIndex.Value : 0;
 
             if (index <= priorInputBuffer.Count - 1)
             {
-                result = priorInputBuffer[index];
-                index++;
-                priorInputBufferIndex = index;
+                if (!searchForward && index >= 0)
+                {
+                    index = index > 0 ? index - 1 : priorInputBuffer.Count - 1; // if we have searched until the index is 0 - then reset
+                    result = priorInputBuffer[index];
+                    priorInputBufferIndex = index;
+                }
+                else
+                {
+                    result = priorInputBuffer[index];
+                    index++;
+                    priorInputBufferIndex = index >= priorInputBuffer.Count ? 0 : index; // if index is past the end then we need to start over
+                }
+                
             }
 
             return result;

@@ -1,38 +1,46 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace SharpRoll.Model
 {
-    public class RollHistory
+    public static class RollHistory
     {
-        private readonly string storageFile = @"./rollhistory.local.json";
+        private static readonly string storageFile = @"./rollhistory.local.json";
 
-        public void AddResult(int diceSideCount, int rollCount, int count, int modifier)
+        static RollHistory()
+        {
+            ClearResults();
+        }
+
+        public static void AddResult(int diceSideCount, int rollCount, int count, int modifier)
         {
             var result = new RollResult(diceSideCount, rollCount, count, modifier);
             AddResult(result);
         }
-        
-        public void AddResult(RollResult result)
+
+        public static void AddResult(RollResult result)
         {
             var currentResults = GetJsonStore();
+            currentResults = null != currentResults ? currentResults : new List<RollResult>();
             currentResults.Add(result);
             SetJsonStore(currentResults);
         }
 
-        public List<RollResult> GetResults()
+        public static List<RollResult> GetResults()
         {
             return GetJsonStore();
         }
 
-        public void ClearResults()
+        public static void ClearResults()
         {
-            var results = new List<RollResult>();
-            SetJsonStore(results);
+            if (File.Exists(storageFile))
+            {
+                File.WriteAllText(storageFile, string.Empty);
+            }
         }
 
-        private List<RollResult> GetJsonStore()
+        private static List<RollResult> GetJsonStore()
         {
             var result = new List<RollResult>();
 
@@ -51,7 +59,7 @@ namespace SharpRoll.Model
             return result;
         }
 
-        private void SetJsonStore(List<RollResult> results)
+        private static void SetJsonStore(List<RollResult> results)
         {
             var serializer = new JsonSerializer();
             serializer.NullValueHandling = NullValueHandling.Ignore;

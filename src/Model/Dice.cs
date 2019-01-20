@@ -2,21 +2,20 @@
 using System.Diagnostics;
 using SharpRoll.Model;
 
-namespace SharpRoll.Controllers
+namespace SharpRoll.Model
 {
     public static class Dice
     {
         private static Random rand = new Random((int)System.DateTime.Now.ToFileTime());
-        private static RollHistory history = new RollHistory();
-
+        
         public static void ClearHistory()
         {
-            history.ClearResults();
+            RollHistory.ClearResults();
         }
         
         public static void GetHistory()
         {
-            var rollHistory = history.GetResults();
+            var rollHistory = RollHistory.GetResults();
 
             foreach (var roll in rollHistory)
             {
@@ -52,7 +51,7 @@ namespace SharpRoll.Controllers
                 result += modifier;    
             }
 
-            history.AddResult(diceSideCount, count, modifier, result);
+            RollHistory.AddResult(diceSideCount, count, modifier, result);
             
             return new RollResult(diceSideCount, count, modifier, result);
         }
