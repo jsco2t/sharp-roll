@@ -12,12 +12,14 @@ namespace SharpRoll.Controllers
         private List<string> priorInputBuffer = new List<string>();
         private int? priorInputBufferIndex = null;
         private Dictionary<string, IInputHandler> inputHandlers;
-        private ConsoleView consoleView;
+        private IConsoleView consoleView;
+        private IHelpView helpView;
 
-        public InputManager(ConsoleView consoleView)
+        public InputManager(IConsoleView consoleView, IHelpView helpView)
         {
             inputHandlers = new Dictionary<string, IInputHandler>();
             this.consoleView = consoleView;
+            this.helpView = helpView;
 
             var rollInputHandler = new RollInputHandler();
             var exitInputHandler = new ExitInputHandler();
@@ -65,10 +67,26 @@ namespace SharpRoll.Controllers
 
                 case ConsoleKey.Enter:
                 case ConsoleKey.End:
-                    var result = HandleInput(inputBuffer.ToString());
+                    var input = inputBuffer.ToString();
+                    var result = HandleInput(input);
                     inputBuffer.Clear();
                     priorInputBufferIndex = 0;
-                    consoleView.Write($"{Environment.NewLine}{result}{Environment.NewLine}");
+                    
+                    if (String.IsNullOrWhiteSpace(result))
+                    {
+                        if (!CommandKeyWordIsSupported(input))
+                        {
+                            helpView.WriteHelpMessage();
+                        }
+                        else
+                        {
+                            consoleView.WriteLine("");
+                        }
+                    }
+                    else
+                    {
+                        consoleView.Write($"{Environment.NewLine}{result}{Environment.NewLine}");
+                    }
                     break;
 
                 case ConsoleKey.Backspace:
@@ -89,6 +107,21 @@ namespace SharpRoll.Controllers
         private string[] GetInputTokens(string input)
         {
             return input.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        private bool CommandKeyWordIsSupported(string input)
+        {
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                var inputTokens = GetInputTokens(input);
+
+                if (inputTokens != null && inputTokens.Length > 0)
+                {
+                    return inputHandlers.ContainsKey(inputTokens[0]);
+                }
+            }
+
+            return false;
         }
 
         private void AddToPriorInputBuffer(string input)

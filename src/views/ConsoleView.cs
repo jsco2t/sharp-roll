@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SharpRoll.Views
 {
-    public class ConsoleView
+    public class ConsoleView : IConsoleView
     {
         public void RemoveCharacter()
         {

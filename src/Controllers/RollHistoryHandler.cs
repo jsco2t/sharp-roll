@@ -28,12 +28,12 @@ namespace SharpRoll.Controllers
 
             if (null != historyResults && historyResults.Any())
             {
-                sb.Append("\n############################################ \n");
+                sb.Append($"{Environment.NewLine}############################################ {Environment.NewLine}");
                 foreach (var historyItem in historyResults)
                 {
-                    sb.Append($" {historyItem.RollCount} d{historyItem.DiceSideCount} dice (with a modifier of: {historyItem.RollModifier}) rolled for a result of: {historyItem.Result} \n");
+                    sb.Append($" {historyItem.RollCount} d{historyItem.DiceSideCount} dice (with a modifier of: {historyItem.RollModifier}) rolled for a result of: {historyItem.Result} {Environment.NewLine}");
                 }
-                sb.Append("############################################ \n");
+                sb.Append($"############################################ {Environment.NewLine}");
             }
 
             return sb.ToString();
