@@ -8,14 +8,16 @@ namespace SharpRoll.Model
         public int RollCount;
         public int RollModifier;
         public int Result;
+        public int Entropy;
         public DateTime RollTimeStamp; 
 
-        public RollResult(int diceSideCount, int rollCount, int rollModifier, int result)
+        public RollResult(int diceSideCount, int rollCount, int rollModifier, int entropy, int result)
         {
             DiceSideCount = diceSideCount;
             RollCount = rollCount;
             RollModifier = rollModifier;
             Result = result;
+            Entropy = entropy;
             RollTimeStamp = DateTime.Now;
         }
     }

@@ -13,9 +13,9 @@ namespace SharpRoll.Model
             ClearResults();
         }
 
-        public static void AddResult(int diceSideCount, int rollCount, int count, int modifier)
+        public static void AddResult(int diceSideCount, int rollCount, int count, int entropy, int modifier)
         {
-            var result = new RollResult(diceSideCount, rollCount, count, modifier);
+            var result = new RollResult(diceSideCount, rollCount, count, entropy, modifier);
             AddResult(result);
         }
 

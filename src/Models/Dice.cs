@@ -6,7 +6,9 @@ namespace SharpRoll.Model
 {
     public static class Dice
     {
-        private static Random rand = new Random((int)System.DateTime.Now.ToFileTime());
+        private static int lastSeed = (int) System.DateTime.Now.ToFileTime();
+        private static Random rand = new Random(lastSeed);
+        
         
         public static void ClearHistory()
         {
@@ -19,12 +21,23 @@ namespace SharpRoll.Model
 
             foreach (var roll in rollHistory)
             {
-                Debug.WriteLine($"Rolled {roll.RollCount} times for Dice: d{roll.DiceSideCount}, with modifier: {roll.RollModifier}, resulted in: {roll.Result}, at: {roll.RollTimeStamp}");
+                Debug.WriteLine($"Rolled {roll.RollCount} times for Dice: d{roll.DiceSideCount}, with modifier: {roll.RollModifier}, resulted in: {roll.Result} [{roll.RollTimeStamp}]");
             }
         }
         
-        public static RollResult Roll(int diceSideCount, int count, int modifier)
+        public static RollResult Roll(int diceSideCount, int count, int modifier, int? updatedSeed = null)
         {
+            if (updatedSeed.HasValue && updatedSeed.Value != 0)
+            {
+                var seedToUse = updatedSeed.Value;
+
+                if (seedToUse != lastSeed)
+                {
+                    lastSeed = seedToUse;
+                    rand = new Random(seedToUse);
+                }
+            }
+
             var result = 0;
 
             if (count == 0)
@@ -51,9 +64,9 @@ namespace SharpRoll.Model
                 result += modifier;    
             }
 
-            RollHistory.AddResult(diceSideCount, count, modifier, result);
+            RollHistory.AddResult(diceSideCount, count, modifier, lastSeed, result);
             
-            return new RollResult(diceSideCount, count, modifier, result);
+            return new RollResult(diceSideCount, count, modifier, lastSeed, result);
         }
     }
 }

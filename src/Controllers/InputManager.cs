@@ -1,8 +1,9 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
-
+using System.Diagnostics;
+using System.Text;
 using SharpRoll.Views;
+using SharpRoll.Model;
 
 namespace SharpRoll.Controllers
 {
@@ -14,6 +15,8 @@ namespace SharpRoll.Controllers
         private Dictionary<string, IInputHandler> inputHandlers;
         private IConsoleView consoleView;
         private IHelpView helpView;
+        private Stopwatch stopWatch = new Stopwatch();
+        private int entropy = 0;
 
         public InputManager(IConsoleView consoleView, IHelpView helpView)
         {
@@ -25,14 +28,14 @@ namespace SharpRoll.Controllers
             var exitInputHandler = new ExitInputHandler();
             var rollHistoryHandler = new RollHistoryHandler();
 
-            inputHandlers.Add(rollInputHandler.HandlesKeyword, rollInputHandler);
-            inputHandlers.Add(exitInputHandler.HandlesKeyword, exitInputHandler);
-            inputHandlers.Add(rollHistoryHandler.HandlesKeyword, rollHistoryHandler);
+            rollInputHandler.HandlesKeywords.ForEach(x => inputHandlers.Add(x, rollInputHandler));
+            exitInputHandler.HandlesKeywords.ForEach(x => inputHandlers.Add(x, exitInputHandler));
+            rollHistoryHandler.HandlesKeywords.ForEach(x => inputHandlers.Add(x, rollHistoryHandler));
         }
 
         public string HandleInput(string input)
         {
-            var inputTokens = GetInputTokens(input);
+            var inputTokens = GetInputTokens($"{input} {Strings.EntropyKeyName}:{entropy}");
 
             var keyword = inputTokens.Length > 0 ? inputTokens[0] : string.Empty;
 
@@ -51,6 +54,10 @@ namespace SharpRoll.Controllers
 
             switch (key.Key)
             {
+                case ConsoleKey.LeftArrow:
+                case ConsoleKey.RightArrow:
+                    break;
+                
                 case ConsoleKey.UpArrow:
                     priorInput = GetPriorInputBufferItem();
                     consoleView.ReplaceLine(priorInput);
@@ -87,6 +94,8 @@ namespace SharpRoll.Controllers
                     {
                         consoleView.Write($"{Environment.NewLine}{result}{Environment.NewLine}");
                     }
+
+                    stopWatch.Reset();
                     break;
 
                 case ConsoleKey.Backspace:
@@ -98,6 +107,7 @@ namespace SharpRoll.Controllers
                 default:
                     consoleView.Write(key.KeyChar);
                     inputBuffer.Append(key.KeyChar);
+                    UpdateEntropy();
                     break;
             }
 
@@ -167,6 +177,18 @@ namespace SharpRoll.Controllers
             }
         }
 
+        private void UpdateEntropy()
+        {
+            if (!stopWatch.IsRunning)
+            {
+                stopWatch.Start();
+            }
+            else
+            {
+                var currentTicks = stopWatch.ElapsedTicks;
+                stopWatch.Restart();
+                entropy += (int)currentTicks;
+            }
+        }
     }
-    
 }

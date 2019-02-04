@@ -5,7 +5,7 @@ namespace SharpRoll.Controllers
 {
     public interface IInputHandler
     {
-        string HandlesKeyword { get; }
+        List<string> HandlesKeywords { get; }
         string HandleInput(string[] inputTokens);
     }
 }
