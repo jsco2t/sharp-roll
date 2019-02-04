@@ -32,7 +32,7 @@ namespace SharpRoll.Controllers
                 sb.Append($"{Environment.NewLine}############################################ {Environment.NewLine}");
                 foreach (var historyItem in historyResults)
                 {
-                    sb.Append($" {historyItem.RollCount} d{historyItem.DiceSideCount} dice (with a modifier of: {historyItem.RollModifier}, and entropy of: {historyItem.Entropy}) rolled for a result of: {historyItem.Result} {Environment.NewLine}");
+                    sb.Append($" {historyItem.DiceCount} d{historyItem.RollResults.First().DiceSideCount} dice (with a modifier of: {historyItem.Modifier}, and entropy of: {historyItem.RollResults.First().Entropy}) rolled for a result of: {historyItem.RollTotal} {Environment.NewLine}");
                 }
                 sb.Append($"############################################ {Environment.NewLine}");
             }

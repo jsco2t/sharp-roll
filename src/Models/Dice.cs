@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using SharpRoll.Model;
 
@@ -9,24 +10,15 @@ namespace SharpRoll.Model
         private static int lastSeed = (int) System.DateTime.Now.ToFileTime();
         private static Random rand = new Random(lastSeed);
         
-        
         public static void ClearHistory()
         {
             RollHistory.ClearResults();
         }
         
-        public static void GetHistory()
+        public static RollSummary Roll(int diceSideCount, int count, int modifier, int? updatedSeed = null)
         {
-            var rollHistory = RollHistory.GetResults();
+            var rolls = new List<RollResult>();
 
-            foreach (var roll in rollHistory)
-            {
-                Debug.WriteLine($"Rolled {roll.RollCount} times for Dice: d{roll.DiceSideCount}, with modifier: {roll.RollModifier}, resulted in: {roll.Result} [{roll.RollTimeStamp}]");
-            }
-        }
-        
-        public static RollResult Roll(int diceSideCount, int count, int modifier, int? updatedSeed = null)
-        {
             if (updatedSeed.HasValue && updatedSeed.Value != 0)
             {
                 var seedToUse = updatedSeed.Value;
@@ -53,9 +45,7 @@ namespace SharpRoll.Model
             for (var i = 0; i < count; i++)
             {
                 var value = rand.Next(1, diceSideCount);
-                result += value;
-                
-                Debug.WriteLine($"Rolling: d{diceSideCount}, result: {value}");
+                rolls.Add(new RollResult(diceSideCount, lastSeed, value));
             }
 
             if (modifier != 0)
@@ -64,9 +54,10 @@ namespace SharpRoll.Model
                 result += modifier;    
             }
 
-            RollHistory.AddResult(diceSideCount, count, modifier, lastSeed, result);
+            var rollSummary = new RollSummary(rolls, modifier);
+            RollHistory.AddResult(rollSummary);
             
-            return new RollResult(diceSideCount, count, modifier, lastSeed, result);
+            return rollSummary;
         }
     }
 }

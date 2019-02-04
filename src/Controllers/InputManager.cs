@@ -27,10 +27,12 @@ namespace SharpRoll.Controllers
             var rollInputHandler = new RollInputHandler();
             var exitInputHandler = new ExitInputHandler();
             var rollHistoryHandler = new RollHistoryHandler();
+            var clearHistoryHandler = new ClearHistoryHandler();
 
             rollInputHandler.HandlesKeywords.ForEach(x => inputHandlers.Add(x, rollInputHandler));
             exitInputHandler.HandlesKeywords.ForEach(x => inputHandlers.Add(x, exitInputHandler));
             rollHistoryHandler.HandlesKeywords.ForEach(x => inputHandlers.Add(x, rollHistoryHandler));
+            clearHistoryHandler.HandlesKeywords.ForEach(x => inputHandlers.Add(x, clearHistoryHandler));
         }
 
         public string HandleInput(string input)

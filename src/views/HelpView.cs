@@ -60,6 +60,9 @@ namespace SharpRoll.Views
             message.Append($"{Environment.NewLine}");
             message.Append($"  history: {Environment.NewLine}");
             message.Append($"    Returns the current roll history {Environment.NewLine}");
+            message.Append($"{Environment.NewLine}");
+            message.Append($"  clear: {Environment.NewLine}");
+            message.Append($"    Clears the roll history{Environment.NewLine}");
             return message.ToString();
         }
     }

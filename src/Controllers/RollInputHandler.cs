@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using SharpRoll.Model;
 
@@ -17,7 +18,7 @@ namespace SharpRoll.Controllers
         
         public string HandleInput(string[] inputTokens)
         {
-            RollResult rollResult = null;
+            RollSummary rollResult = null;
             var result = "Invalid roll request. Please use this format: roll dNN {optional-count} {optional-modifier}";
             
             if (ValidateInputTokens(inputTokens))
@@ -63,9 +64,9 @@ namespace SharpRoll.Controllers
             return false;
         }
 
-        private string GetResultReport(RollResult result)
+        private string GetResultReport(RollSummary summary)
         {
-            return $"You rolled a d{result.DiceSideCount} ({result.RollCount} times) with a modifier of {result.RollModifier}, for a total of: {result.Result}";
+            return $"You rolled a d{summary.RollResults.First().DiceSideCount} ({summary.DiceCount} times) with a modifier of {summary.Modifier}, for a total of: {summary.RollTotal}";
         }
 
         private int? GetDice(string dice)

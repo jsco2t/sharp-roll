@@ -13,21 +13,15 @@ namespace SharpRoll.Model
             ClearResults();
         }
 
-        public static void AddResult(int diceSideCount, int rollCount, int count, int entropy, int modifier)
-        {
-            var result = new RollResult(diceSideCount, rollCount, count, entropy, modifier);
-            AddResult(result);
-        }
-
-        public static void AddResult(RollResult result)
+        public static void AddResult(RollSummary summary)
         {
             var currentResults = GetJsonStore();
-            currentResults = null != currentResults ? currentResults : new List<RollResult>();
-            currentResults.Add(result);
+            currentResults = null != currentResults ? currentResults : new List<RollSummary>();
+            currentResults.Add(summary);
             SetJsonStore(currentResults);
         }
 
-        public static List<RollResult> GetResults()
+        public static List<RollSummary> GetResults()
         {
             return GetJsonStore();
         }
@@ -40,9 +34,9 @@ namespace SharpRoll.Model
             }
         }
 
-        private static List<RollResult> GetJsonStore()
+        private static List<RollSummary> GetJsonStore()
         {
-            var result = new List<RollResult>();
+            var result = new List<RollSummary>();
 
             var serializer = new JsonSerializer();
             serializer.NullValueHandling = NullValueHandling.Ignore;
@@ -52,14 +46,14 @@ namespace SharpRoll.Model
                 using (var sr = new StreamReader(storageFile))
                 using (var reader = new JsonTextReader(sr))
                 {
-                    result = serializer.Deserialize(reader, typeof(List<RollResult>)) as List<RollResult>;
+                    result = serializer.Deserialize(reader, typeof(List<RollSummary>)) as List<RollSummary>;
                 } 
             }
 
             return result;
         }
 
-        private static void SetJsonStore(List<RollResult> results)
+        private static void SetJsonStore(List<RollSummary> summary)
         {
             var serializer = new JsonSerializer();
             serializer.NullValueHandling = NullValueHandling.Ignore;
@@ -67,7 +61,7 @@ namespace SharpRoll.Model
             using (var sw = new StreamWriter(storageFile))
             using (var writer = new JsonTextWriter(sw))
             {
-                serializer.Serialize(writer, results);
+                serializer.Serialize(writer, summary);
             }
         }
     }
